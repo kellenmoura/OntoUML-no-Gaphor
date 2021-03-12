@@ -26,26 +26,9 @@ from gaphor.UML.uml import (
     Class
 )
 
-
-def create_heritage(general, specific):
-    assert (
-        general.model is specific.model
-    ), "General and Specific are from different models"
-    model = general.model
-    gen = model.create(Heritage)
-    gen.general = general
-    gen.specific = specific
-    return gen
-
-def create_Formal(general, specific):
-    assert (
-        general.model is specific.model
-    ), "General and Specific are from different models"
-    model = general.model
-    gen = model.create(Formal)
-    gen.general = general
-    gen.specific = specific
-    return gen
+from gaphor.UML3.uml3 import (
+    StereotypeRelator,
+)
 
 
 def stereotypes_str(element: Element, stereotypes: Sequence[str] = ()):
@@ -62,7 +45,7 @@ def stereotypes_str(element: Element, stereotypes: Sequence[str] = ()):
     # generate string with stereotype names separated by coma
     if element:
         applied: Iterable[str] = (
-            stereotype_name(st) for st in get_applied_stereotypes(element)
+            stereotyperelator_name(st) for st in get_applied_stereotypes(element)
         )
     else:
         applied = ()
@@ -73,7 +56,7 @@ def stereotypes_str(element: Element, stereotypes: Sequence[str] = ()):
         return ""
 
 
-def stereotype_name(stereotype):
+def stereotyperelator_name(stereotyperelator):
     """
     Return stereotype name suggested by UML specification. First will be
     character lowercase unless the second character is uppercase.
@@ -82,7 +65,7 @@ def stereotype_name(stereotype):
      stereotype
         Stereotype UML metamodel instance.
     """
-    name = stereotype.name
+    name = stereotyperelator.name
     if not name:
         return ""
     elif len(name) > 1 and name[1].isupper():
@@ -91,7 +74,7 @@ def stereotype_name(stereotype):
         return name[0].lower() + name[1:]
 
 
-def apply_stereotype(element, stereotype):
+def apply_stereotyperelator(element, stereotyperelator):
     """
     Apply a stereotype to an element.
 
@@ -102,12 +85,12 @@ def apply_stereotype(element, stereotype):
         UML metamodel stereotype instance.
     """
     assert (
-        element.model is stereotype.model
+        element.model is stereotyperelator.model
     ), "Element and Stereotype are from different models"
     model = element.model
     obj = model.create(InstanceSpecification)
-    obj.classifier = stereotype
-    element.appliedStereotype = obj
+    obj.classifier = stereotyperelator
+    element.appliedStereotypeRelator = obj
     return obj
 
 def get_stereotypes(element):
@@ -116,7 +99,7 @@ def get_stereotypes(element):
     """
     model = element.model
     # UML specs does not allow to extend stereotypes with stereotypes
-    if isinstance(element, Stereotype):
+    if isinstance(element, StereotypeRelator):
         return ()
 
     cls = type(element)
@@ -135,4 +118,4 @@ def get_applied_stereotypes(element):
     """
     Get collection of applied stereotypes to an element.
     """
-    return element.appliedStereotype[:].classifier
+    return element.appliedStereotypeRelator[:].classifier
