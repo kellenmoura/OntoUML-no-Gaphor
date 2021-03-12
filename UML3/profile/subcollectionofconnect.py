@@ -2,34 +2,24 @@ from gaphor import UML
 from gaphor import UML3
 from gaphor.diagram.connectors import Connector, RelationshipConnect
 from gaphor.diagram.presentation import Classified
-from gaphor.UML3.profile.heritage import HeritageItem
+from gaphor.UML3.profile.subcollectionof import SubcollectionofItem
 
-@Connector.register(Classified, HeritageItem)
-class HeritageConnect(RelationshipConnect):
+@Connector.register(Classified, SubcollectionofItem)
+class SubcollectionofConnect(RelationshipConnect):
 
-    line: HeritageItem
+    line: SubcollectionofItem
 
     def allow(self, handle, port):
         line = self.line
         subject = self.element.subject
-        #print("#subject   ", subject)
-        #subject2 = self.element.subject
         tipo = str(type(subject))
-        #tipo2 = str(type(subject2))
-        #tipo2 = print("tipo2", str(type(subject2)))
-        result = False
+        '''result = False
         global head
 
         #condições para saber qual é o stereotype
         if tipo == "<class 'gaphor.UML3.uml3.StereotypeKind'>":
             #aux = "Kind"
             nome = (UML3.StereotypeKind)
-            #tuplatail = (UML3.StereotypeRelator)
-            '''print("tipo antes", tipo)
-            tipo = ""
-            print("tipo depois", tipo)
-            tipo = str(type(subject))
-            print("tipo depois de depois", tipo)'''
         elif tipo == "<class 'gaphor.UML3.uml3.StereotypeSubkind'>":
             #aux = "Subkind"
             nome = (UML3.StereotypeSubkind)
@@ -97,6 +87,13 @@ class HeritageConnect(RelationshipConnect):
                 head = "Mode"
             elif nome == UML3.StereotypeQuality:
                 head = "Quality"
+            #print("allow head", allow)
+            #print("sub1", subject)
+            #print("nome head", nome)
+            #print("Head", head)
+            #print("#line.head", line.head)
+
+            #return allow and super().allow(handle, port)
 
 
         if handle is line.tail:
@@ -129,21 +126,23 @@ class HeritageConnect(RelationshipConnect):
 
             if nome in opc:
                 result = isinstance(subject, nome)
-
             
-        return result
+        return result'''
 
+        if handle is line.head:
+            allow = isinstance(subject, UML3.StereotypeCollective)
 
-        '''print("teste saida super", super())
-        print("teste saida allow", super().allow(handle, port))
-        return allow and super().allow(handle, port)'''
+        elif handle is line.tail:
+            allow = isinstance(subject, UML3.StereotypeCollective)
+
+        return allow and super().allow(handle, port)
         
     def connect_subject(self, handle):
         return True
-'''@Connector.register(StereotypeRelator, HeritageItem)
-class HeritageConnect(RelationshipConnect):
+'''@Connector.register(StereotypeRelator, SubcollectionofItem)
+class SubcollectionofConnect(RelationshipConnect):
 
-    line: HeritageItem
+    line: SubcollectionofItem
 
     def allow(line, handle, item, port=None) -> bool:
         if port is None and len(item.ports()) > 0:
@@ -179,8 +178,8 @@ class HeritageConnect(RelationshipConnect):
 
             # Find all associations and determine if the properties on
             # the association ends have a type that points to the StereotypeKind.
-            ext: UML3.Heritage
-            for ext in line.model.select(UML3.Heritage):  # type: ignore[assignment]
+            ext: UML3.Subcollectionof
+            for ext in line.model.select(UML3.Subcollectionof):  # type: ignore[assignment]
                 end1 = ext.memberEnd[0]
                 end2 = ext.memberEnd[1]
                 if (end1.type is head_type and end2.type is tail_type) or (
@@ -194,8 +193,8 @@ class HeritageConnect(RelationshipConnect):
                         line.subject = ext
                         return
             else:
-                # Create a new Heritage relationship
-                relation = UML3.model.create_heritage(head_type, tail_type)
+                # Create a new Subcollectionof relationship
+                relation = UML3.model.create_Subcollectionof(head_type, tail_type)
                 line.subject = relation
 
 
@@ -203,7 +202,7 @@ class HeritageConnect(RelationshipConnect):
         """
         Disconnect model element.
         Disconnect property (memberEnd) too, in case of end of life for
-        Heritage.
+        Subcollectionof.
         """
         opposite = self.line.opposite(handle)
         hct = self.get_connected(handle)

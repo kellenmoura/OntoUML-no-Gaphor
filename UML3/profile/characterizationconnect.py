@@ -2,12 +2,12 @@ from gaphor import UML
 from gaphor import UML3
 from gaphor.diagram.connectors import Connector, RelationshipConnect
 from gaphor.diagram.presentation import Classified
-from gaphor.UML3.profile.heritage import HeritageItem
+from gaphor.UML3.profile.characterization import CharacterizationItem
 
-@Connector.register(Classified, HeritageItem)
-class HeritageConnect(RelationshipConnect):
+@Connector.register(Classified, CharacterizationItem)
+class CharacterizationConnect(RelationshipConnect):
 
-    line: HeritageItem
+    line: CharacterizationItem
 
     def allow(self, handle, port):
         line = self.line
@@ -97,41 +97,61 @@ class HeritageConnect(RelationshipConnect):
                 head = "Mode"
             elif nome == UML3.StereotypeQuality:
                 head = "Quality"
+            #print("allow head", allow)
+            #print("sub1", subject)
+            #print("nome head", nome)
+            #print("Head", head)
+            #print("#line.head", line.head)
+
+            #return allow and super().allow(handle, port)
 
 
         if handle is line.tail:
             if head == "Kind":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Subkind":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Phase":
-                opc = [UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Role":
-                opc = [UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Collective":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Quantity":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Relator":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Category":
-                opc = [UML3.StereotypeKind, UML3.StereotypeCollective, UML3.StereotypeCategory, UML3.StereotypeSubkind, UML3.StereotypeQuantity, UML3.StereotypeRelator]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Phasemixin":
-                opc = [UML3.StereotypePhase, UML3.StereotypePhasemixin]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Mixin":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypeKind, UML3.StereotypeCollective, UML3.StereotypeQuantity, UML3.StereotypeCategory, UML3.StereotypeMixin, UML3.StereotypeRole, UML3.StereotypePhase, UML3.StereotypeRolemixin, UML3.StereotypeRelator]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Rolemixin":
-                opc = [UML3.StereotypeRolemixin, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Mode":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole, UML3.StereotypeMode]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
             elif head == "Quality":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuality, UML3.StereotypeMode]
 
             if nome in opc:
                 result = isinstance(subject, nome)
-
+            #Descobrir como fazer para pegar objeto de alça cabeça (nome que ficou no line.head).
+            '''if nome in tuplatail.line.head:
+                allow = isinstance(subject, nome)
+                print("OOOK")'''
+            #if UML3.StereotypeRelator in tuplatail:
+            #result = isinstance(subject, UML3.StereotypeRelator)
+            #print("allow tail", allow)
+            #print("sub2", subject)
+            #print("nome tail", nome)
+            #print("#line.tail", line.tail)
+            #print("handle2", handle)
+            #result = True
+            #return allow and super().allow(handle, port)
             
         return result
+        #return result and super().allow(handle, port)
 
 
         '''print("teste saida super", super())
@@ -140,10 +160,10 @@ class HeritageConnect(RelationshipConnect):
         
     def connect_subject(self, handle):
         return True
-'''@Connector.register(StereotypeRelator, HeritageItem)
-class HeritageConnect(RelationshipConnect):
+'''@Connector.register(StereotypeRelator, CharacterizationItem)
+class CharacterizationConnect(RelationshipConnect):
 
-    line: HeritageItem
+    line: CharacterizationItem
 
     def allow(line, handle, item, port=None) -> bool:
         if port is None and len(item.ports()) > 0:
@@ -179,8 +199,8 @@ class HeritageConnect(RelationshipConnect):
 
             # Find all associations and determine if the properties on
             # the association ends have a type that points to the StereotypeKind.
-            ext: UML3.Heritage
-            for ext in line.model.select(UML3.Heritage):  # type: ignore[assignment]
+            ext: UML3.Characterization
+            for ext in line.model.select(UML3.Characterization):  # type: ignore[assignment]
                 end1 = ext.memberEnd[0]
                 end2 = ext.memberEnd[1]
                 if (end1.type is head_type and end2.type is tail_type) or (
@@ -194,8 +214,8 @@ class HeritageConnect(RelationshipConnect):
                         line.subject = ext
                         return
             else:
-                # Create a new Heritage relationship
-                relation = UML3.model.create_heritage(head_type, tail_type)
+                # Create a new Characterization relationship
+                relation = UML3.model.create_Characterization(head_type, tail_type)
                 line.subject = relation
 
 
@@ -203,7 +223,7 @@ class HeritageConnect(RelationshipConnect):
         """
         Disconnect model element.
         Disconnect property (memberEnd) too, in case of end of life for
-        Heritage.
+        Characterization.
         """
         opposite = self.line.opposite(handle)
         hct = self.get_connected(handle)

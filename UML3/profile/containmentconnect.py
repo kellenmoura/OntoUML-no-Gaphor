@@ -2,21 +2,17 @@ from gaphor import UML
 from gaphor import UML3
 from gaphor.diagram.connectors import Connector, RelationshipConnect
 from gaphor.diagram.presentation import Classified
-from gaphor.UML3.profile.heritage import HeritageItem
+from gaphor.UML3.profile.containment import ContainmentItem
 
-@Connector.register(Classified, HeritageItem)
-class HeritageConnect(RelationshipConnect):
+@Connector.register(Classified, ContainmentItem)
+class ContainmentConnect(RelationshipConnect):
 
-    line: HeritageItem
+    line: ContainmentItem
 
     def allow(self, handle, port):
         line = self.line
         subject = self.element.subject
-        #print("#subject   ", subject)
-        #subject2 = self.element.subject
         tipo = str(type(subject))
-        #tipo2 = str(type(subject2))
-        #tipo2 = print("tipo2", str(type(subject2)))
         result = False
         global head
 
@@ -24,12 +20,6 @@ class HeritageConnect(RelationshipConnect):
         if tipo == "<class 'gaphor.UML3.uml3.StereotypeKind'>":
             #aux = "Kind"
             nome = (UML3.StereotypeKind)
-            #tuplatail = (UML3.StereotypeRelator)
-            '''print("tipo antes", tipo)
-            tipo = ""
-            print("tipo depois", tipo)
-            tipo = str(type(subject))
-            print("tipo depois de depois", tipo)'''
         elif tipo == "<class 'gaphor.UML3.uml3.StereotypeSubkind'>":
             #aux = "Subkind"
             nome = (UML3.StereotypeSubkind)
@@ -101,37 +91,37 @@ class HeritageConnect(RelationshipConnect):
 
         if handle is line.tail:
             if head == "Kind":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Subkind":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Phase":
-                opc = [UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Role":
-                opc = [UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Collective":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Quantity":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Relator":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Category":
-                opc = [UML3.StereotypeKind, UML3.StereotypeCollective, UML3.StereotypeCategory, UML3.StereotypeSubkind, UML3.StereotypeQuantity, UML3.StereotypeRelator]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Phasemixin":
-                opc = [UML3.StereotypePhase, UML3.StereotypePhasemixin]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Mixin":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypeKind, UML3.StereotypeCollective, UML3.StereotypeQuantity, UML3.StereotypeCategory, UML3.StereotypeMixin, UML3.StereotypeRole, UML3.StereotypePhase, UML3.StereotypeRolemixin, UML3.StereotypeRelator]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Rolemixin":
-                opc = [UML3.StereotypeRolemixin, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Mode":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole, UML3.StereotypeMode]
+                opc = [UML3.StereotypeQuantity]
             elif head == "Quality":
-                opc = [UML3.StereotypeSubkind, UML3.StereotypePhase, UML3.StereotypeRole]
+                opc = [UML3.StereotypeQuantity]
 
             if nome in opc:
                 result = isinstance(subject, nome)
 
-            
         return result
+        #return result and super().allow(handle, port)
 
 
         '''print("teste saida super", super())
@@ -140,10 +130,10 @@ class HeritageConnect(RelationshipConnect):
         
     def connect_subject(self, handle):
         return True
-'''@Connector.register(StereotypeRelator, HeritageItem)
-class HeritageConnect(RelationshipConnect):
+'''@Connector.register(StereotypeRelator, ContainmentItem)
+class ContainmentConnect(RelationshipConnect):
 
-    line: HeritageItem
+    line: ContainmentItem
 
     def allow(line, handle, item, port=None) -> bool:
         if port is None and len(item.ports()) > 0:
@@ -179,8 +169,8 @@ class HeritageConnect(RelationshipConnect):
 
             # Find all associations and determine if the properties on
             # the association ends have a type that points to the StereotypeKind.
-            ext: UML3.Heritage
-            for ext in line.model.select(UML3.Heritage):  # type: ignore[assignment]
+            ext: UML3.Containment
+            for ext in line.model.select(UML3.Containment):  # type: ignore[assignment]
                 end1 = ext.memberEnd[0]
                 end2 = ext.memberEnd[1]
                 if (end1.type is head_type and end2.type is tail_type) or (
@@ -194,8 +184,8 @@ class HeritageConnect(RelationshipConnect):
                         line.subject = ext
                         return
             else:
-                # Create a new Heritage relationship
-                relation = UML3.model.create_heritage(head_type, tail_type)
+                # Create a new Containment relationship
+                relation = UML3.model.create_Containment(head_type, tail_type)
                 line.subject = relation
 
 
@@ -203,7 +193,7 @@ class HeritageConnect(RelationshipConnect):
         """
         Disconnect model element.
         Disconnect property (memberEnd) too, in case of end of life for
-        Heritage.
+        Containment.
         """
         opposite = self.line.opposite(handle)
         hct = self.get_connected(handle)

@@ -1,5 +1,5 @@
 """
-Heritage --
+Dependencyblack --
 """
 
 
@@ -10,14 +10,14 @@ from gaphor.diagram.shapes import Box, Text, EditableText
 from gaphor.diagram.support import represents
 from gaphor.UML.modelfactory import stereotypes_str
 
-@represents(UML3.Heritage)
-class HeritageItem(LinePresentation):
+@represents(UML3.Dependencyblack)
+class DependencyblackItem(LinePresentation):
     def __init__(self, id=None, model=None):
         super().__init__(id, model)
 
 
         self.shape_middle = Text(
-            text=lambda: stereotypes_str(self.subject, ("Heritage",)),
+            text=lambda: stereotypes_str(self.subject, ("Dependencyblack",)),
         )
         self.watch("subject[NamedElement].name")
         self.watch("subject.appliedStereotype.classifier.name")
