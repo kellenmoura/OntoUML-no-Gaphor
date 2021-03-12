@@ -24,6 +24,8 @@ from gaphor.diagram.shapes import (
 )
 from gaphor.diagram.support import represents
 from gaphor.UML.classes.stereotype import stereotype_compartments
+from gaphor.UML3.classesonto.stereotyperelator import stereotyperelator_compartments
+
 
 log = logging.getLogger(__name__)
 
@@ -43,7 +45,7 @@ log = logging.getLogger(__name__)
 @represents(UML3.StereotypeMixin)
 @represents(UML3.StereotypeMode)
 @represents(UML3.StereotypeQuality)
-class ClassItem(ElementPresentation[UML.Class], Classified):
+class ClassItem(ElementPresentation[UML3.Class], Classified):
     """This item visualizes a Class instance.
 
     A ClassItem contains two compartments: one for attributes and one for
@@ -100,6 +102,8 @@ class ClassItem(ElementPresentation[UML.Class], Classified):
             return ["phasemixin"]
         elif isinstance(self.subject, UML3.StereotypeQuality):
             return ["quality"]
+        elif isinstance(self.subject, UML3.Material):
+            return ["material"]
         else:
             return ()
 
@@ -107,7 +111,7 @@ class ClassItem(ElementPresentation[UML.Class], Classified):
         self.shape = Box(
             Box(
                 Text(
-                    text=lambda: UML.model.stereotypes_str(
+                    text=lambda: UML3.model.stereotypes_str(
                         self.subject, self.additional_stereotypes()
                     ),
                 ),
@@ -138,7 +142,7 @@ class ClassItem(ElementPresentation[UML.Class], Classified):
                 and [operations_compartment(self.subject)]
                 or []
             ),
-            *(self.show_stereotypes and stereotype_compartments(self.subject) or []),
+            *(self.show_stereotypes and stereotyperelator_compartments(self.subject) or []),
             style={
                 "min-width": 100,
                 "min-height": 50,

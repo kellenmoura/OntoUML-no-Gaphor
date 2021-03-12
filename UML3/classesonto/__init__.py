@@ -13,6 +13,7 @@ from gaphor.UML3.classesonto import (
     stereotypemixin,
     stereotypemode,
     stereotypequality,
+    classesontopropertypages
 )
 
 #from gaphor.UML3.classesonto.heritage import HeritageItem

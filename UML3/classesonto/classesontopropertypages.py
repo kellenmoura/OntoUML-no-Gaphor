@@ -22,6 +22,7 @@ from gaphor.UML.classes.klass import ClassItem
 from gaphor.UML.components.connector import ConnectorItem
 from gaphor.UML.profiles.stereotypepropertypages import stereotype_model
 
+
 log = logging.getLogger(__name__)
 
 
